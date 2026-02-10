@@ -1,6 +1,6 @@
 ﻿using BepInEx;
+using BepInEx.Logging;
 using HarmonyLib;
-using Player.Tablet;
 using static CargoBoxController;
 
 namespace MakeItWork
@@ -8,15 +8,21 @@ namespace MakeItWork
     /**
      * <summary>
      *     Changes the refill behaviour of the cashiers such that they only refill the boxes
-     *     when they are completely empty.
+     *     and labels when they are completely empty. The notifications will also only pop up
+     *     when these supplies are completely used up.
+     *     
+     *     TODO change notification text from "low" to "empty", preferably in all supported languages (help?)
      * </summary>
      */
     [BepInPlugin(PluginInfo.PLUGIN_GUID, PluginInfo.PLUGIN_NAME, PluginInfo.PLUGIN_VERSION)]
-    public class UseUpAllBoxesPlugin : BaseUnityPlugin
+    public class UseUpAllSuppliesPlugin : BaseUnityPlugin
     {
+        public static readonly ManualLogSource logger = BepInEx.Logging.Logger.CreateLogSource(PluginInfo.PLUGIN_NAME);
+
         private void Awake()
         {
-            Harmony.CreateAndPatchAll(typeof(UseUpAllBoxesPlugin), PluginInfo.PLUGIN_NAME);
+            Harmony.CreateAndPatchAll(typeof(UseUpAllSuppliesPlugin), PluginInfo.PLUGIN_NAME);
+            UnityEngine.Debug.unityLogger.logEnabled = false;
         }
 
         /**
@@ -61,6 +67,41 @@ namespace MakeItWork
         {
             // reset the respective box count (i.e. lower it by 2) so we don't have perpetual box supplies
             __instance.cargoBoxHolders[(int)boxType]._boxCount -= 2;
+        }
+
+
+
+
+
+        /**
+         * <summary>
+         *     Suppresses the notification trigger when the label printer has enough charge left to print at least
+         *     one label by temporarily raising the charge just enough for the notification not to trigger.
+         * </summary>
+         * <param name="__instance">the instance containing the label printer in question</param>
+         * <returns>Always returns true.</returns>
+         */
+        [HarmonyPatch(typeof(StickerInteractableController), "AddOrResolveLowStickerSupplyNotificationIfNecessary")]
+        [HarmonyPrefix]
+        static bool OverrideLabelsLowNotificationPrefix(ref StickerInteractableController __instance)
+        {
+            // check is done every time BEFORE a label is printed
+            __instance._currentChargeAmount += 20 - 2 * __instance._currentUsageChargeAmount;
+
+            return true;
+        }
+
+        /**
+         * <summary>
+         *     Resets the temporarily raised label charge so we don't end up with weird behaviour
+         * </summary>
+         * <param name="__instance">the instance containing the label printer in question</param>
+         */
+        [HarmonyPatch(typeof(StickerInteractableController), "AddOrResolveLowStickerSupplyNotificationIfNecessary")]
+        [HarmonyPostfix]
+        static void OverrideLabelsLowNotificationPostfix(ref StickerInteractableController __instance)
+        {
+            __instance._currentChargeAmount -= 20 - 2 * __instance._currentUsageChargeAmount;
         }
     }
 }

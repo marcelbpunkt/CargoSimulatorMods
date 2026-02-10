@@ -4,11 +4,13 @@
     <TargetFramework>netstandard2.1</TargetFramework>
     <AssemblyName>MakeItWork</AssemblyName>
     <Description>Various bugfixes and QoL improvements</Description>
-    <Version>1.0.0</Version>
+    <Version>0.1.0</Version>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <LangVersion>latest</LangVersion>
     <AssemblyTitle>MakeItWork</AssemblyTitle>
     <Title>MakeItWork</Title>
+    <Authors>marcelbpunkt</Authors>
+    <Company>n/a</Company>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
@@ -35,4 +37,8 @@
       <HintPath>..\libs\Assembly-CSharp-Publicized.dll</HintPath>
     </Reference>
   </ItemGroup>
+  
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="copy /y $(TargetDir)$(ProjectName).dll &quot;%25SteamGames%25\Cargo Simulator\BepInEx\plugins&quot;" />
+  </Target>
 </Project>
