@@ -11,6 +11,7 @@
     <Title>MakeItWork</Title>
     <Authors>marcelbpunkt</Authors>
     <Company>n/a</Company>
+    <PackageId>marcelbpunkt.cargosimulatormods.makeitwork</PackageId>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">

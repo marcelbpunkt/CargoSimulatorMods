@@ -10,8 +10,10 @@ namespace MakeItWork
      *     Changes the refill behaviour of the cashiers such that they only refill the boxes
      *     and labels when they are completely empty. The notifications will also only pop up
      *     when these supplies are completely used up.
+     *     Standard and fragile tape are excluded from this mod because you need to refill it earlier than at 0%.
      *     
      *     TODO change notification text from "low" to "empty", preferably in all supported languages (help?)
+     *     TODO make trigger point configurable, or anything configurable really
      * </summary>
      */
     [BepInPlugin(PluginInfo.PLUGIN_GUID, PluginInfo.PLUGIN_NAME, PluginInfo.PLUGIN_VERSION)]
@@ -56,7 +58,7 @@ namespace MakeItWork
 
         /**
          * <summary>
-         *     Resets the temporarily raised box count so we don't end up with weird behaviour
+         *     Resets the temporarily raised box count.
          * </summary>
          * <param name="__instance">the instance containing the boxes in question</param>
          * <param name="boxType">the type of box that is to be checked</param>
@@ -65,7 +67,6 @@ namespace MakeItWork
         [HarmonyPostfix]
         static void OverrideBoxesLowNotificationPostfix(ref DeskShelfController __instance, CargoBoxController.BoxType boxType)
         {
-            // reset the respective box count (i.e. lower it by 2) so we don't have perpetual box supplies
             __instance.cargoBoxHolders[(int)boxType]._boxCount -= 2;
         }
 
@@ -93,7 +94,7 @@ namespace MakeItWork
 
         /**
          * <summary>
-         *     Resets the temporarily raised label charge so we don't end up with weird behaviour
+         *     Resets the temporarily raised label charge.
          * </summary>
          * <param name="__instance">the instance containing the label printer in question</param>
          */
