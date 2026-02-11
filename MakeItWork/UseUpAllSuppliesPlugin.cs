@@ -25,6 +25,7 @@ namespace MakeItWork
         {
             Harmony.CreateAndPatchAll(typeof(UseUpAllSuppliesPlugin), PluginInfo.PLUGIN_NAME);
             UnityEngine.Debug.unityLogger.logEnabled = false;
+            
         }
 
         /**
@@ -36,7 +37,7 @@ namespace MakeItWork
          * <param name="boxType">the type of box that is to be checked</param>
          * <returns>Always returns true.</returns>
          */
-        [HarmonyPatch(typeof(DeskShelfController), "AddOrResolveSupplyBoxNotificationIfNecessary")]
+        [HarmonyPatch(typeof(DeskShelfController), nameof(DeskShelfController.AddOrResolveSupplyBoxNotificationIfNecessary))]
         [HarmonyPrefix]
         static bool OverrideBoxesLowNotificationPrefix(ref DeskShelfController __instance, CargoBoxController.BoxType boxType)
         {
@@ -63,7 +64,7 @@ namespace MakeItWork
          * <param name="__instance">the instance containing the boxes in question</param>
          * <param name="boxType">the type of box that is to be checked</param>
          */
-        [HarmonyPatch(typeof(DeskShelfController), "AddOrResolveSupplyBoxNotificationIfNecessary")]
+        [HarmonyPatch(typeof(DeskShelfController), nameof(DeskShelfController.AddOrResolveSupplyBoxNotificationIfNecessary))]
         [HarmonyPostfix]
         static void OverrideBoxesLowNotificationPostfix(ref DeskShelfController __instance, CargoBoxController.BoxType boxType)
         {
@@ -82,12 +83,12 @@ namespace MakeItWork
          * <param name="__instance">the instance containing the label printer in question</param>
          * <returns>Always returns true.</returns>
          */
-        [HarmonyPatch(typeof(StickerInteractableController), "AddOrResolveLowStickerSupplyNotificationIfNecessary")]
+        [HarmonyPatch(typeof(StickerInteractableController), nameof(StickerInteractableController.AddOrResolveLowStickerSupplyNotificationIfNecessary))]
         [HarmonyPrefix]
         static bool OverrideLabelsLowNotificationPrefix(ref StickerInteractableController __instance)
         {
             // check is done every time BEFORE a label is printed
-            __instance._currentChargeAmount += 20 - 2 * __instance._currentUsageChargeAmount;
+            __instance._currentChargeAmount += 20f - 2f * __instance._currentUsageChargeAmount;
 
             return true;
         }
@@ -98,11 +99,82 @@ namespace MakeItWork
          * </summary>
          * <param name="__instance">the instance containing the label printer in question</param>
          */
-        [HarmonyPatch(typeof(StickerInteractableController), "AddOrResolveLowStickerSupplyNotificationIfNecessary")]
+        [HarmonyPatch(typeof(StickerInteractableController), nameof(StickerInteractableController.AddOrResolveLowStickerSupplyNotificationIfNecessary))]
         [HarmonyPostfix]
         static void OverrideLabelsLowNotificationPostfix(ref StickerInteractableController __instance)
         {
-            __instance._currentChargeAmount -= 20 - 2 * __instance._currentUsageChargeAmount;
+            __instance._currentChargeAmount -= 20f - 2f * __instance._currentUsageChargeAmount;
+        }
+
+
+
+
+
+        /**
+         * <summary>
+         *     Suppresses the notification trigger when the standard and fragile tape have at least 10% charge left
+         *     respectively by temporarily raising the charge just enough for the notification not to trigger.
+         * </summary>
+         * <param name="__instance">the instance containing the tapes in question</param>
+         * <returns>Always returns true.</returns>
+         */
+        [HarmonyPatch(typeof(TapeDispenserController), nameof(TapeDispenserController.AddNotificationOnStartIfNecessary))]
+        [HarmonyPrefix]
+        static bool OverrideTapeLowNotificationPrefixA(ref TapeDispenserController __instance)
+        {
+            __instance._tapeChargeAmount += 10f;
+            __instance._fragileTapeChargeAmount += 10f;
+
+            return true;
+        }
+
+        /**
+         * <summary>
+         *     Resets the temporarily raised standard and fragile tape charge.
+         * </summary>
+         * <param name="__instance">the instance containing the tapes in question</param>
+         */
+        [HarmonyPatch(typeof(TapeDispenserController), nameof(TapeDispenserController.AddNotificationOnStartIfNecessary))]
+        [HarmonyPostfix]
+        static void OverrideTapeLowNotificationPostfixA(ref TapeDispenserController __instance)
+        {
+            __instance._tapeChargeAmount -= 10f;
+            __instance._fragileTapeChargeAmount -= 10f;
+        }
+
+
+
+
+
+        /**
+         * <summary>
+         *     Tape notifications are triggered in a second way after successfully taping a box.
+         *     This patch suppresses that as long as there is at least 10% charge on the
+         *     <i>currently used</i> tape.
+         * </summary>
+         * <param name="__instance">the instance containing the currently used tape</param>
+         * <returns>Always returns true.</returns>
+         */
+        [HarmonyPatch(typeof(TapeDispenserController), nameof(TapeDispenserController.SuccessTaped))]
+        [HarmonyPrefix]
+        static bool OverrideTapeLowNotificationPrefixB(ref TapeDispenserController __instance)
+        {
+            __instance._currentChargeAmount += 10f;
+
+            return true;
+        }
+
+        /**
+         * <summary>
+         *     Resets the temporarily raised <i>currently used</i> tape charge.
+         * </summary>
+         * <param name="__instance">the instance containing the currently used tape</param>
+         */
+        [HarmonyPatch(typeof(TapeDispenserController), nameof(TapeDispenserController.SuccessTaped))]
+        [HarmonyPostfix]
+        static void OverrideTapeLowNotificationPostfixB(ref TapeDispenserController __instance)
+        {
+            __instance._currentChargeAmount -= 10f;
         }
     }
 }
