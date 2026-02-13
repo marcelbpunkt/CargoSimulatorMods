@@ -1,6 +1,7 @@
 ﻿using BepInEx;
-using HarmonyLib;
 using Enviro;
+using HarmonyLib;
+using static Enviro.EnviroManager;
 using static MakeItWork.Logging;
 
 namespace MakeItWork
@@ -17,6 +18,19 @@ namespace MakeItWork
         private void Awake()
         {
             Harmony.CreateAndPatchAll(typeof(AutoLightsPlugin), PluginInfo.PLUGIN_NAME);
+        }
+
+        [HarmonyPatch(typeof(LightSwitchController), nameof(LightSwitchController.OnEnable))]
+        [HarmonyPrefix]
+        internal static bool OnEnablePrefix(LightSwitchController __instance)
+        {
+            // complements the "if (_isMainLight)" condition so all switches are subscribed
+            if (!__instance._isMainLight)
+            {
+                EnviroManager.instance.OnHourPassed += __instance.OnHourPassed;
+            }
+
+            return true;
         }
 
         [HarmonyPatch(typeof(LightSwitchController), nameof(LightSwitchController.OnHourPassed))]

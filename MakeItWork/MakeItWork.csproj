@@ -4,7 +4,7 @@
     <TargetFramework>netstandard2.1</TargetFramework>
     <AssemblyName>marcelbpunkt.cargosimulatormods.makeitwork</AssemblyName>
     <Description>Various bugfixes and QoL improvements</Description>
-    <Version>0.2.0</Version>
+    <Version>0.2.1</Version>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <LangVersion>latest</LangVersion>
     <AssemblyTitle>MakeItWork</AssemblyTitle>
