@@ -38,6 +38,9 @@
     <Reference Include="Assembly-CSharp">
       <HintPath>..\libs\Assembly-CSharp-Publicized.dll</HintPath>
     </Reference>
+    <Reference Include="Enviro3.Runtime">
+      <HintPath>..\libs\Enviro3.Runtime.dll</HintPath>
+    </Reference>
   </ItemGroup>
   
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">

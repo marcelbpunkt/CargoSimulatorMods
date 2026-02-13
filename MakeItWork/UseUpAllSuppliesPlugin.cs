@@ -1,7 +1,5 @@
 ﻿using BepInEx;
-using BepInEx.Logging;
 using HarmonyLib;
-using static CargoBoxController;
 
 namespace MakeItWork
 {
@@ -19,13 +17,10 @@ namespace MakeItWork
     [BepInPlugin(PluginInfo.PLUGIN_GUID, PluginInfo.PLUGIN_NAME, PluginInfo.PLUGIN_VERSION)]
     public class UseUpAllSuppliesPlugin : BaseUnityPlugin
     {
-        public static readonly ManualLogSource logger = BepInEx.Logging.Logger.CreateLogSource(PluginInfo.PLUGIN_NAME);
-
         private void Awake()
         {
             Harmony.CreateAndPatchAll(typeof(UseUpAllSuppliesPlugin), PluginInfo.PLUGIN_NAME);
             UnityEngine.Debug.unityLogger.logEnabled = false;
-            
         }
 
         /**
@@ -39,20 +34,18 @@ namespace MakeItWork
          */
         [HarmonyPatch(typeof(DeskShelfController), nameof(DeskShelfController.AddOrResolveSupplyBoxNotificationIfNecessary))]
         [HarmonyPrefix]
-        static bool OverrideBoxesLowNotificationPrefix(ref DeskShelfController __instance, CargoBoxController.BoxType boxType)
+        internal static bool OverrideBoxesLowNotificationPrefix(ref DeskShelfController __instance, CargoBoxController.BoxType boxType)
         {
-            if (boxType == CargoBoxController.BoxType.None)
+            if (PluginConfig.enableUseUpAllSupplies.Value && boxType != CargoBoxController.BoxType.None)
             {
-                return true;
+                /* 
+                 * Honestly, this is probably the dirtiest way possible but they hardcoded the notifications trigger box count to 3,
+                 * so no other quick way to control the triggerification.
+                 * Also I chose incrementing the private member over using CargoBoxHolderController.AddBoxCount() since that would
+                 * trigger a visual update and also be less performant.
+                 */
+                __instance.cargoBoxHolders[(int)boxType]._boxCount += 2;
             }
-
-            /* 
-             * Honestly, this is probably the dirtiest way possible but they hardcoded the notifications trigger box count to 3,
-             * so no other quick way to control the triggerification.
-             * Also I chose incrementing the private member over using CargoBoxHolderController.AddBoxCount() since that would
-             * trigger a visual update and also be less performant.
-             */
-            __instance.cargoBoxHolders[(int)boxType]._boxCount += 2;
 
             return true;
         }
@@ -66,9 +59,12 @@ namespace MakeItWork
          */
         [HarmonyPatch(typeof(DeskShelfController), nameof(DeskShelfController.AddOrResolveSupplyBoxNotificationIfNecessary))]
         [HarmonyPostfix]
-        static void OverrideBoxesLowNotificationPostfix(ref DeskShelfController __instance, CargoBoxController.BoxType boxType)
+        internal static void OverrideBoxesLowNotificationPostfix(ref DeskShelfController __instance, CargoBoxController.BoxType boxType)
         {
-            __instance.cargoBoxHolders[(int)boxType]._boxCount -= 2;
+            if (PluginConfig.enableUseUpAllSupplies.Value)
+            {
+                __instance.cargoBoxHolders[(int)boxType]._boxCount -= 2;
+            }
         }
 
 
@@ -85,10 +81,13 @@ namespace MakeItWork
          */
         [HarmonyPatch(typeof(StickerInteractableController), nameof(StickerInteractableController.AddOrResolveLowStickerSupplyNotificationIfNecessary))]
         [HarmonyPrefix]
-        static bool OverrideLabelsLowNotificationPrefix(ref StickerInteractableController __instance)
+        internal static bool OverrideLabelsLowNotificationPrefix(ref StickerInteractableController __instance)
         {
-            // check is done every time BEFORE a label is printed
-            __instance._currentChargeAmount += 20f - 2f * __instance._currentUsageChargeAmount;
+            if (PluginConfig.enableUseUpAllSupplies.Value)
+            {
+                // check is done every time BEFORE a label is printed
+                __instance._currentChargeAmount += 20f - 2f * __instance._currentUsageChargeAmount;
+            }
 
             return true;
         }
@@ -101,9 +100,12 @@ namespace MakeItWork
          */
         [HarmonyPatch(typeof(StickerInteractableController), nameof(StickerInteractableController.AddOrResolveLowStickerSupplyNotificationIfNecessary))]
         [HarmonyPostfix]
-        static void OverrideLabelsLowNotificationPostfix(ref StickerInteractableController __instance)
+        internal static void OverrideLabelsLowNotificationPostfix(ref StickerInteractableController __instance)
         {
-            __instance._currentChargeAmount -= 20f - 2f * __instance._currentUsageChargeAmount;
+            if (PluginConfig.enableUseUpAllSupplies.Value)
+            {
+                __instance._currentChargeAmount -= 20f - 2f * __instance._currentUsageChargeAmount;
+            }
         }
 
 
@@ -120,10 +122,13 @@ namespace MakeItWork
          */
         [HarmonyPatch(typeof(TapeDispenserController), nameof(TapeDispenserController.AddNotificationOnStartIfNecessary))]
         [HarmonyPrefix]
-        static bool OverrideTapeLowNotificationPrefixA(ref TapeDispenserController __instance)
+        internal static bool OverrideTapeLowNotificationPrefixA(ref TapeDispenserController __instance)
         {
-            __instance._tapeChargeAmount += 10f;
-            __instance._fragileTapeChargeAmount += 10f;
+            if (PluginConfig.enableUseUpAllSupplies.Value)
+            {
+                __instance._tapeChargeAmount += 10f;
+                __instance._fragileTapeChargeAmount += 10f;
+            }
 
             return true;
         }
@@ -136,10 +141,13 @@ namespace MakeItWork
          */
         [HarmonyPatch(typeof(TapeDispenserController), nameof(TapeDispenserController.AddNotificationOnStartIfNecessary))]
         [HarmonyPostfix]
-        static void OverrideTapeLowNotificationPostfixA(ref TapeDispenserController __instance)
+        internal static void OverrideTapeLowNotificationPostfixA(ref TapeDispenserController __instance)
         {
-            __instance._tapeChargeAmount -= 10f;
-            __instance._fragileTapeChargeAmount -= 10f;
+            if (PluginConfig.enableUseUpAllSupplies.Value)
+            {
+                __instance._tapeChargeAmount -= 10f;
+                __instance._fragileTapeChargeAmount -= 10f;
+            }
         }
 
 
@@ -157,9 +165,12 @@ namespace MakeItWork
          */
         [HarmonyPatch(typeof(TapeDispenserController), nameof(TapeDispenserController.SuccessTaped))]
         [HarmonyPrefix]
-        static bool OverrideTapeLowNotificationPrefixB(ref TapeDispenserController __instance)
+        internal static bool OverrideTapeLowNotificationPrefixB(ref TapeDispenserController __instance)
         {
-            __instance._currentChargeAmount += 10f;
+            if (PluginConfig.enableUseUpAllSupplies.Value)
+            {
+                __instance._currentChargeAmount += 10f;
+            }
 
             return true;
         }
@@ -172,9 +183,12 @@ namespace MakeItWork
          */
         [HarmonyPatch(typeof(TapeDispenserController), nameof(TapeDispenserController.SuccessTaped))]
         [HarmonyPostfix]
-        static void OverrideTapeLowNotificationPostfixB(ref TapeDispenserController __instance)
+        internal static void OverrideTapeLowNotificationPostfixB(ref TapeDispenserController __instance)
         {
-            __instance._currentChargeAmount -= 10f;
+            if (PluginConfig.enableUseUpAllSupplies.Value)
+            {
+                __instance._currentChargeAmount -= 10f;
+            }
         }
     }
 }
