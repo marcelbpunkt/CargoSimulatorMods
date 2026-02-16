@@ -13,7 +13,7 @@ namespace MakeItWork
 
         internal static ConfigEntry<bool> EnableUseUpAllSupplies {  get; set; }
         internal static ConfigEntry<bool> EnableAutoLights { get; set; }
-        internal static ConfigEntry<int> AutoLightsHourEnabled { get; set; }
+        internal static ConfigEntry<int> AutoLightsSwitchOnHour { get; set; }
 
         internal static void Initialize()
         {
@@ -33,7 +33,7 @@ namespace MakeItWork
             ConfigDescription description = new ConfigDescription(
                 "The hour of the time (24h format) at which the lights automatically switch on.",
                 new AcceptableValueRange<int>(8, 21));
-            AutoLightsHourEnabled = _cfgFile.Bind("General", "autoLightsHourEnabled", 18, description);
+            AutoLightsSwitchOnHour = _cfgFile.Bind("General", "autoLightsSwitchOnHour", 18, description);
 
             SetupWatcher();
         }

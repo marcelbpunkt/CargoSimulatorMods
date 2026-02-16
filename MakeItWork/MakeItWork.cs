@@ -4,6 +4,7 @@ using BepInEx.Configuration;
 using BepInEx.Logging;
 using HarmonyLib;
 using System.Collections.Generic;
+using UnityEngine;
 using static MakeItWork.Logging;
 
 namespace MakeItWork
@@ -83,10 +84,16 @@ namespace MakeItWork
 
         [HarmonyPatch(typeof(LightSwitchController), nameof(LightSwitchController.OnHourPassed))]
         [HarmonyPrefix]
-        internal static bool OnHourPassedPrefix(LightSwitchController __instance)
+        internal static bool OnHourPassedPre(LightSwitchController __instance)
         {
             if (!PluginConfig.EnableAutoLights.Value) return true;
-            return AutoLightsPatch.OnHourPassedPrefix(__instance);
+            return AutoLightsPatch.OnHourPassedPre(__instance);
         }
+
+        /////////////////////////
+        // FixedCamera patches //
+        /////////////////////////
+
+        
     }
 }
