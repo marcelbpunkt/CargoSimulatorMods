@@ -1,11 +1,7 @@
 ﻿
 using BepInEx;
-using BepInEx.Configuration;
-using BepInEx.Logging;
 using HarmonyLib;
 using System.Collections.Generic;
-using UnityEngine;
-using static MakeItWork.Logging;
 
 namespace MakeItWork
 {
@@ -15,8 +11,9 @@ namespace MakeItWork
         ////////////////////
         // Initialization //
         ////////////////////
-        
-        private void Awake() {
+
+        private void Awake()
+        {
             PluginConfig.Initialize();
             Harmony.CreateAndPatchAll(typeof(MakeItWork), PluginInfo.PLUGIN_NAME);
         }
@@ -26,44 +23,53 @@ namespace MakeItWork
             PluginConfig.Save();
         }
 
-        
-        
-        
+
+
+
 
         //////////////////////////////
         // UseUpAllSupplies patches //
         //////////////////////////////
 
-        [HarmonyPatch(typeof(DeskShelfController), nameof(DeskShelfController.AddOrResolveSupplyBoxNotificationIfNecessary))]
+        [HarmonyPatch(typeof(DeskShelfController),
+            nameof(DeskShelfController.AddOrResolveSupplyBoxNotificationIfNecessary))]
         [HarmonyTranspiler]
-        internal static IEnumerable<CodeInstruction> BoxesLowNotificationTrans(IEnumerable<CodeInstruction> instructions)
+        internal static IEnumerable<CodeInstruction> BoxesAddOrResolveSupplyBoxNotificationIfNecessaryTrans(
+            IEnumerable<CodeInstruction> instructions)
         {
-            if (!PluginConfig.EnableUseUpAllSupplies.Value) return instructions;
-            return UseUpAllSuppliesPatch.BoxesLowNotificationTrans(instructions);
+            if (!PluginConfig.EnableUseUpAllSupplies.Value)
+                return instructions;
+            return UseUpAllSuppliesPatch.BoxesAddOrResolveSupplyBoxNotificationIfNecessaryTrans(instructions);
         }
 
-        [HarmonyPatch(typeof(StickerInteractableController), nameof(StickerInteractableController.AddOrResolveLowStickerSupplyNotificationIfNecessary))]
+        [HarmonyPatch(typeof(StickerInteractableController),
+            nameof(StickerInteractableController.AddOrResolveLowStickerSupplyNotificationIfNecessary))]
         [HarmonyPrefix]
-        internal static bool LabelsLowNotificationPre(ref StickerInteractableController __instance)
+        internal static bool LabelsAddOrResolveLowStickerSupplyNotificationIfNecessaryPre(
+            ref StickerInteractableController __instance)
         {
-            if (!PluginConfig.EnableUseUpAllSupplies.Value) return true;
-            return UseUpAllSuppliesPatch.LabelsLowNotificationPre(ref __instance);
+            return !PluginConfig.EnableUseUpAllSupplies.Value ||
+                UseUpAllSuppliesPatch.LabelsAddOrResolveLowStickerSupplyNotificationIfNecessaryPre(ref __instance);
         }
 
-        [HarmonyPatch(typeof(TapeDispenserController), nameof(TapeDispenserController.AddNotificationOnStartIfNecessary))]
+        [HarmonyPatch(typeof(TapeDispenserController),
+            nameof(TapeDispenserController.AddNotificationOnStartIfNecessary))]
         [HarmonyTranspiler]
-        internal static IEnumerable<CodeInstruction> TapeLowNotificationStartTrans(IEnumerable<CodeInstruction> instructions)
+        internal static IEnumerable<CodeInstruction> TapeAddNotificationOnStartIfNecessaryTrans(
+            IEnumerable<CodeInstruction> instructions)
         {
-            if (!PluginConfig.EnableUseUpAllSupplies.Value) return instructions;
-            return UseUpAllSuppliesPatch.TapeLowNotificationStartTrans(instructions);
+            if (!PluginConfig.EnableUseUpAllSupplies.Value)
+                return instructions;
+            return UseUpAllSuppliesPatch.TapeAddNotificationOnStartIfNecessaryTrans(instructions);
         }
 
         [HarmonyPatch(typeof(TapeDispenserController), nameof(TapeDispenserController.SuccessTaped))]
         [HarmonyTranspiler]
-        internal static IEnumerable<CodeInstruction> TapeLowNotificationSuccessTrans(IEnumerable<CodeInstruction> instructions)
+        internal static IEnumerable<CodeInstruction> TapeSuccessTapedTrans(IEnumerable<CodeInstruction> instructions)
         {
-            if (!PluginConfig.EnableUseUpAllSupplies.Value) return instructions;
-            return UseUpAllSuppliesPatch.TapeLowNotificationSuccessTrans(instructions);
+            if (!PluginConfig.EnableUseUpAllSupplies.Value)
+                return instructions;
+            return UseUpAllSuppliesPatch.TapeSuccessTapedTrans(instructions);
         }
 
 
@@ -76,7 +82,8 @@ namespace MakeItWork
 
         [HarmonyPatch(typeof(LightSwitchController), nameof(LightSwitchController.OnEnable))]
         [HarmonyTranspiler]
-        internal static IEnumerable<CodeInstruction> OnEnableTrans(IEnumerable<CodeInstruction> instructions)
+        internal static IEnumerable<CodeInstruction> LightSwitchControllerOnEnableTrans(
+            IEnumerable<CodeInstruction> instructions)
         {
             // always subscribe all lightswitches to OnHourPassed
             return AutoLightsPatch.OnEnableTrans(instructions);
@@ -84,16 +91,23 @@ namespace MakeItWork
 
         [HarmonyPatch(typeof(LightSwitchController), nameof(LightSwitchController.OnHourPassed))]
         [HarmonyPrefix]
-        internal static bool OnHourPassedPre(LightSwitchController __instance)
+        internal static bool LightSwitchControllerOnHourPassedPre(LightSwitchController __instance)
         {
-            if (!PluginConfig.EnableAutoLights.Value) return true;
+            if (!PluginConfig.EnableAutoLights.Value)
+                return true;
             return AutoLightsPatch.OnHourPassedPre(__instance);
         }
 
-        /////////////////////////
-        // FixedCamera patches //
-        /////////////////////////
+        ////////////////////
+        // Camera patches //
+        ////////////////////
 
-        
+        // DisableResetCamera
+        [HarmonyPatch(typeof(RCCP_Camera), nameof(RCCP_Camera.ORBIT))]
+        [HarmonyPrefix]
+        internal static bool RCCP_CameraOrbitPre(RCCP_Camera __instance)
+        {
+            return CameraPatch.RCCP_CameraOrbitPre(__instance);
+        }
     }
 }

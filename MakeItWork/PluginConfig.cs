@@ -8,32 +8,55 @@ namespace MakeItWork
     public static class PluginConfig
     {
         private static readonly string _cfgFileName = PluginInfo.PLUGIN_GUID + ".cfg";
-        
+
         private static readonly ConfigFile _cfgFile = new ConfigFile(Path.Combine(Paths.ConfigPath, _cfgFileName), true);
 
-        internal static ConfigEntry<bool> EnableUseUpAllSupplies {  get; set; }
+        internal static ConfigEntry<bool> EnableUseUpAllSupplies { get; set; }
         internal static ConfigEntry<bool> EnableAutoLights { get; set; }
         internal static ConfigEntry<int> AutoLightsSwitchOnHour { get; set; }
+        internal static ConfigEntry<bool> DisableCameraReset { get; set; }
+        internal static ConfigEntry<bool> FollowCarDirectionInTPS { get; set; }
 
         internal static void Initialize()
         {
+            // General
+
             EnableUseUpAllSupplies = _cfgFile.Bind(
                 "General",
-                "enableUseUpAllSupplies",
+                "EnableUseUpAllSupplies",
                 true,
                 "If enabled, only pushes notifications about low supplies when they are empty or insufficient, "
                     + "and causes cashiers to use them up completely before refilling."
             );
             EnableAutoLights = _cfgFile.Bind(
                 "General",
-                "enableAutoLights",
+                "EnableAutoLights",
                 true,
                 "If enabled, automatically switches on store and warehouse lights at dusk."
             );
             ConfigDescription description = new ConfigDescription(
                 "The hour of the time (24h format) at which the lights automatically switch on.",
                 new AcceptableValueRange<int>(8, 21));
-            AutoLightsSwitchOnHour = _cfgFile.Bind("General", "autoLightsSwitchOnHour", 18, description);
+            AutoLightsSwitchOnHour = _cfgFile.Bind(
+                "General",
+                "AutoLightsSwitchOnHour",
+                18,
+                description);
+
+            // Vehicles
+
+            DisableCameraReset = _cfgFile.Bind(
+                "Vehicles",
+                "DisableCameraReset",
+                true,
+                "When set to true, the car camera (both first and third person view) "
+                    + "does not 'snap back' after .");
+            FollowCarDirectionInTPS = _cfgFile.Bind(
+                "Vehicles",
+                "FollowCarDirectionInTPS",
+                true,
+                "When set to true, the camera in third person mode turns with the vehicle, even if the looking "
+                    + "direction differs from the moving direction.");
 
             SetupWatcher();
         }
@@ -69,7 +92,7 @@ namespace MakeItWork
                 logger.LogError($"Error while loading configuration file {_cfgFileName}. Using defaults.");
             }
         }
-        
+
         internal static void Save()
         {
             _cfgFile.Save();

@@ -1,10 +1,7 @@
-﻿using BepInEx;
-using Enviro;
+﻿using Enviro;
 using HarmonyLib;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection.Emit;
-using static MakeItWork.Logging;
 
 namespace MakeItWork
 {
@@ -22,7 +19,6 @@ namespace MakeItWork
 
             foreach (var instruction in instructions)
             {
-                logger.LogInfo($"{isMainLightChecked}, {instruction.opcode}");
                 if (isMainLightChecked)
                 {
                     yield return instruction;
@@ -32,11 +28,11 @@ namespace MakeItWork
             }
         }
 
-        internal static bool OnHourPassedPre(LightSwitchController __instance) 
+        internal static bool OnHourPassedPre(LightSwitchController __instance)
         {
             EnviroTimeModule currentTime = ((EnviroManagerBase)EnviroManager.instance).Time;
             // the actual time should always be 2-3 seconds before the full hour but just to be safe, round up from 30 minutes
-            int hours = currentTime.minutes >=30 ? currentTime.hours + 1 : currentTime.hours;
+            int hours = currentTime.minutes >= 30 ? currentTime.hours + 1 : currentTime.hours;
             if (hours >= PluginConfig.AutoLightsSwitchOnHour.Value && !__instance._isOn)
             {
                 __instance.LightSwitch();

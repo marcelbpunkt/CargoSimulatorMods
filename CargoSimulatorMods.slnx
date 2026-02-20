@@ -1,3 +1,5 @@
 <Solution>
-  <Project Path="MakeItWork/MakeItWork.csproj" />
+  <Project Path="MakeItWork/MakeItWork.csproj">
+    <BuildType Project="Release" />
+  </Project>
 </Solution>
