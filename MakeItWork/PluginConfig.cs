@@ -15,7 +15,6 @@ namespace MakeItWork
         internal static ConfigEntry<bool> EnableAutoLights { get; set; }
         internal static ConfigEntry<int> AutoLightsSwitchOnHour { get; set; }
         internal static ConfigEntry<bool> DisableCameraReset { get; set; }
-        internal static ConfigEntry<bool> FollowCarDirectionInTPS { get; set; }
 
         internal static void Initialize()
         {
@@ -51,12 +50,6 @@ namespace MakeItWork
                 true,
                 "When set to true, the car camera (both first and third person view) "
                     + "does not 'snap back' after .");
-            FollowCarDirectionInTPS = _cfgFile.Bind(
-                "Vehicles",
-                "FollowCarDirectionInTPS",
-                true,
-                "When set to true, the camera in third person mode turns with the vehicle, even if the looking "
-                    + "direction differs from the moving direction.");
 
             SetupWatcher();
         }
