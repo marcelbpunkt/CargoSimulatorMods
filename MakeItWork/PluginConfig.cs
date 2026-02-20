@@ -15,6 +15,7 @@ namespace MakeItWork
         internal static ConfigEntry<bool> EnableAutoLights { get; set; }
         internal static ConfigEntry<int> AutoLightsSwitchOnHour { get; set; }
         internal static ConfigEntry<bool> DisableCameraReset { get; set; }
+        internal static ConfigEntry<bool> SkipTutorials { get; set; }
 
         internal static void Initialize()
         {
@@ -41,6 +42,11 @@ namespace MakeItWork
                 "AutoLightsSwitchOnHour",
                 18,
                 description);
+            SkipTutorials = _cfgFile.Bind(
+                "General",
+                "SkipTutorial",
+                true,
+                "Marks all tutorials as solved so they will not appear on screen.");
 
             // Vehicles
 

@@ -93,14 +93,13 @@ namespace MakeItWork
         [HarmonyPrefix]
         internal static bool LightSwitchControllerOnHourPassedPre(LightSwitchController __instance)
         {
-            if (!PluginConfig.EnableAutoLights.Value)
-                return true;
-            return AutoLightsPatch.OnHourPassedPre(__instance);
+            return !PluginConfig.EnableAutoLights.Value ||
+                AutoLightsPatch.OnHourPassedPre(__instance);
         }
 
-        ////////////////////
-        // Camera patches //
-        ////////////////////
+        //////////////////
+        // Camera patch //
+        //////////////////
 
         // DisableResetCamera
         [HarmonyPatch(typeof(RCCP_Camera), nameof(RCCP_Camera.ORBIT))]
@@ -108,6 +107,19 @@ namespace MakeItWork
         internal static bool RCCP_CameraOrbitPre(RCCP_Camera __instance)
         {
             return CameraPatch.RCCP_CameraOrbitPre(__instance);
+        }
+
+        ////////////////////////
+        // SkipTutorial patch //
+        ////////////////////////
+
+        [HarmonyPatch(typeof(QuestGoal), nameof(QuestGoal.Init))]
+        [HarmonyPostfix]
+        internal static void QuestGoalInitPost(QuestGoal __instance)
+        {
+            if (!PluginConfig.SkipTutorials.Value)
+                return;
+            SkipTutorialPatch.QuestGoalInitPost(__instance);
         }
     }
 }
