@@ -16,6 +16,7 @@ namespace MakeItWork
         internal static ConfigEntry<int> AutoLightsSwitchOnHour { get; set; }
         internal static ConfigEntry<bool> DisableCameraReset { get; set; }
         internal static ConfigEntry<bool> SkipTutorials { get; set; }
+        internal static ConfigEntry<bool> EnableRebalanceQueue { get; set; }
 
         internal static void Initialize()
         {
@@ -56,6 +57,11 @@ namespace MakeItWork
                 true,
                 "When set to true, the car camera (both first and third person view) "
                     + "does not 'snap back' after .");
+            EnableRebalanceQueue = _cfgFile.Bind(
+                "General",
+                "EnableRebalanceQueue",
+                true,
+                "When set to true, customers that are already queuing move to shorter queues if possible.");
 
             SetupWatcher();
         }

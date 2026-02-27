@@ -91,10 +91,10 @@ namespace MakeItWork
 
         [HarmonyPatch(typeof(LightSwitchController), nameof(LightSwitchController.OnHourPassed))]
         [HarmonyPrefix]
-        internal static bool LightSwitchControllerOnHourPassedPre(LightSwitchController __instance)
+        internal static bool LightSwitchControllerOnHourPassedPre(ref LightSwitchController __instance)
         {
             return !PluginConfig.EnableAutoLights.Value ||
-                AutoLightsPatch.OnHourPassedPre(__instance);
+                AutoLightsPatch.OnHourPassedPre(ref __instance);
         }
 
         //////////////////
@@ -104,9 +104,9 @@ namespace MakeItWork
         // DisableResetCamera
         [HarmonyPatch(typeof(RCCP_Camera), nameof(RCCP_Camera.ORBIT))]
         [HarmonyPrefix]
-        internal static bool RCCP_CameraOrbitPre(RCCP_Camera __instance)
+        internal static bool RCCP_CameraOrbitPre(ref RCCP_Camera __instance)
         {
-            return CameraPatch.RCCP_CameraOrbitPre(__instance);
+            return CameraPatch.RCCP_CameraOrbitPre(ref __instance);
         }
 
         ////////////////////////
@@ -115,11 +115,24 @@ namespace MakeItWork
 
         [HarmonyPatch(typeof(QuestGoal), nameof(QuestGoal.Init))]
         [HarmonyPostfix]
-        internal static void QuestGoalInitPost(QuestGoal __instance)
+        internal static void QuestGoalInitPost(ref QuestGoal __instance)
         {
             if (!PluginConfig.SkipTutorials.Value)
                 return;
-            SkipTutorialPatch.QuestGoalInitPost(__instance);
+            SkipTutorialPatch.QuestGoalInitPost(ref __instance);
+        }
+
+        //////////////////////////
+        // RebalanceQueue patch //
+        //////////////////////////
+
+        [HarmonyPatch(typeof(DeskQueueController), nameof(DeskQueueController.DequeueCustomer))]
+        [HarmonyPostfix]
+        internal static void DeskQueueControllerDequeueCustomerPost(ref DeskQueueController __instance)
+        {
+            if (!PluginConfig.EnableRebalanceQueue.Value)
+                return;
+            RebalanceQueuePatch.DeskQueueControllerDequeueCustomerPost(ref __instance);
         }
     }
 }

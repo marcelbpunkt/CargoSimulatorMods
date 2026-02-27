@@ -10,7 +10,7 @@ namespace MakeItWork
      *     Automatically switches the lights on at dusk.
      * </summary>
      */
-    public class AutoLightsPatch
+    internal static class AutoLightsPatch
     {
         internal static IEnumerable<CodeInstruction> OnEnableTrans(IEnumerable<CodeInstruction> instructions)
         {
@@ -28,7 +28,7 @@ namespace MakeItWork
             }
         }
 
-        internal static bool OnHourPassedPre(LightSwitchController __instance)
+        internal static bool OnHourPassedPre(ref LightSwitchController __instance)
         {
             EnviroTimeModule currentTime = ((EnviroManagerBase)EnviroManager.instance).Time;
             // the actual time should always be 2-3 seconds before the full hour but just to be safe, round up from 30 minutes
