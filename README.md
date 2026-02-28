@@ -39,17 +39,17 @@ Currently in progress:
 Planned:
 
 * Some bugfixes
-** Actually automatically continue partnerships
-** Fix weird UI behaviour when a partnership is active (e.g. displaying "vehicle x needed for this partnership"
-even though it's already active)
-** "Unblock" NPC vehicles that somehow get stuck in front of intersections
-** Fix carrier bug where they only load one vehicle in the warehouse but not the other two.
+	* Actually automatically continue partnerships
+	* Fix weird UI behaviour when a partnership is active (e.g. displaying "vehicle x needed for this partnership"
+	even though it's already active)
+	* "Unblock" NPC vehicles that somehow get stuck in front of intersections
+	* Fix carrier bug where they only load one vehicle in the warehouse but not the other two.
 * Make cashiers choose the closest supply shelf for restocking their desk.
 * Make vehicle requirements for partnerships "at least this vehicle" instead of "exactly this vehicle". No one
 keeps the stupid cargo bike anymore once they upgrade to bigger ones.
 * Make trolleys, pallets and pallet trucks loadable/unloadable on the truck through extra key binds.
 * Make delivery areas interactable with unload key bind (including the aforementioned whole pallets).
-** If a whole pallet is unloaded, an empty pallet will be there ready for pick-up the next day.
+	* If a whole pallet is unloaded, an empty pallet will be there ready for pick-up the next day.
 * Rebalance repair costs so they scale with vehicle type and damage percentage so it actually incentivises the player
 to keep the vehicles in one piece.
 * Have employees make mistakes on lower levels. This could mean mistaping fragile packages, misplacing them in the
@@ -69,26 +69,26 @@ Maybe sometime in the distant future:
 
 * Anything visual or asset-related in general is absolute lowest priority because visuals are my dump skill and I only
 have the pure code to change them and haven't added any new resources into any game so far.
-** Turn truck doors into a ramp or tail lift that you can push pallets over.
-** Make trolley/pallet truck movements more realistic (i.e. set the pivoting point to the other end)
-** Add nicer engine and transmission sounds for higher tier vehicles. The current sounds are ok for the cargo bike but
-not for the other vehicles. The truck needs big manly Diesel engine and pneumatic shift sounds!
-** Fix stereo ouch in truck cockpit view
-** Add a reversing cam into the cockpit
-** In cockpit view, improve visibility through side mirrors at night.
-** Big truck: move them out from behind the A column if possible
-** Make pedestrians go around a vehicle that is parked on the sideway as well as active delivery areas so they don't
-** Make empty pallets stackable (max. 10 high), preferrably through the load/unload keybinds from the pallet truck
-** Make carriers use pallets and trolleys wherever possible (within their area, i.e. either the store or the warehouse)
-** Apply physics to packages on vehicles, pallets and trolleys so they can always tip over, get pushed off etc.
-** Increase trolley and pallet hitboxes so they collide at their edges and get stuck faster so you have to keep that in
-mess up the packages.
-** Make NPC vehicles avoid crashing into the player.
+	* Turn truck doors into a ramp or tail lift that you can push pallets over.
+	* Make trolley/pallet truck movements more realistic (i.e. set the pivoting point to the other end)
+	* Add nicer engine and transmission sounds for higher tier vehicles. The current sounds are ok for the cargo bike but
+	not for the other vehicles. The truck needs big manly Diesel engine and pneumatic shift sounds!
+	* Fix stereo ouch in truck cockpit view
+	* Add a reversing cam into the cockpit
+	* In cockpit view, improve visibility through side mirrors at night.
+	* Big truck: move them out from behind the A column if possible
+	* Make pedestrians go around a vehicle that is parked on the sideway as well as active delivery areas so they don't
+	* Make empty pallets stackable (max. 10 high), preferrably through the load/unload keybinds from the pallet truck
+	* Make carriers use pallets and trolleys wherever possible (within their area, i.e. either the store or the warehouse)
+	* Apply physics to packages on vehicles, pallets and trolleys so they can always tip over, get pushed off etc.
+	* Increase trolley and pallet hitboxes so they collide at their edges and get stuck faster so you have to keep that in
+	mess up the packages.
+	* Make NPC vehicles avoid crashing into the player.
 * Generally improve traffic AI
-** Make them use both lanes. Nowhere is safe hrhr.
-** Make them use the correct lane when turning into another street.
-** Make traffic lights actually mean something
-** Make vehicles free up intersections faster
+	* Make them use both lanes. Nowhere is safe hrhr.
+	* Make them use the correct lane when turning into another street.
+	* Make traffic lights actually mean something
+	* Make vehicles free up intersections faster
 * Maybe don't stop the clock at 9pm but let it keep running 24/7 (maybe slower at night)
 mind when setting up your delivery shelves in the store.
  
