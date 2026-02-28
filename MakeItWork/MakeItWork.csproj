@@ -4,7 +4,7 @@
     <TargetFramework>netstandard2.1</TargetFramework>
     <AssemblyName>marcelbpunkt.cargosimulatormods.makeitwork</AssemblyName>
     <Description>Various bugfixes and QoL improvements</Description>
-    <Version>0.5.0</Version>
+    <Version>0.5.1</Version>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <LangVersion>latest</LangVersion>
     <AssemblyTitle>MakeItWork</AssemblyTitle>
@@ -44,6 +44,6 @@
   </ItemGroup>
   
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="move /y $(TargetDir)$(AssemblyName).dll $(TargetDir)$(ProjectName).dll&#xD;&#xA;copy /y $(TargetDir)$(ProjectName).dll &quot;%25SteamGames%25\Cargo Simulator\BepInEx\plugins&quot;" />
+    <Exec Command="move /y $(TargetDir)$(AssemblyName).dll $(TargetDir)$(ProjectName).dll&#xD;&#xA;copy /y $(TargetDir)$(ProjectName).dll $(ProjectDir)&#xD;&#xA;copy /y $(TargetDir)$(ProjectName).dll &quot;%25SteamGames%25\Cargo Simulator\BepInEx\plugins&quot;" />
   </Target>
 </Project>

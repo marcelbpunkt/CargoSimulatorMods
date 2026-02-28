@@ -109,6 +109,15 @@ namespace MakeItWork
             return CameraPatch.RCCP_CameraOrbitPre(ref __instance);
         }
 
+        /* WIP
+        [HarmonyPatch(typeof(RCCP_Camera), nameof(RCCP_Camera.TPS2))]
+        [HarmonyTranspiler]
+        internal static IEnumerable<CodeInstruction> RCCP_CameraTPS2Trans(IEnumerable<CodeInstruction> instructions)
+        {
+            return CameraPatch.RCCP_CameraTPS2Trans(instructions);
+        }
+        */
+
         ////////////////////////
         // SkipTutorial patch //
         ////////////////////////
