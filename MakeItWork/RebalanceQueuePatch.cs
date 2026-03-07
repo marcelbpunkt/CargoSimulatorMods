@@ -6,7 +6,7 @@ namespace MakeItWork
 {
     internal static class RebalanceQueuePatch
     {
-        internal static void DeskQueueControllerDequeueCustomerPost(ref DeskQueueController __instance)
+        internal static void DeskQueueController_DequeueCustomer_Post(ref DeskQueueController __instance)
         {
             List<DeskQueueController> cashRegisters = __instance._deskGroupController._allDesk;
             cashRegisters.RemoveAll((DeskQueueController desk) => desk is null || !desk.IsEnabled || !desk.IsDeskOpen);

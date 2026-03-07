@@ -18,7 +18,7 @@ namespace MakeItWork
      */
     internal static class UseUpAllSuppliesPatch
     {
-        internal static IEnumerable<CodeInstruction> BoxesAddOrResolveSupplyBoxNotificationIfNecessaryTrans(
+        internal static IEnumerable<CodeInstruction> DeskShelfController_AddOrResolveSupplyBoxNotificationIfNecessary_Trans(
             IEnumerable<CodeInstruction> instructions)
         {
             // We manipulate the next instruction after CargoBoxHolderController.GetBoxCount() is called.
@@ -44,7 +44,7 @@ namespace MakeItWork
             }
         }
 
-        internal static bool LabelsAddOrResolveLowStickerSupplyNotificationIfNecessaryPre(
+        internal static bool StickerInteractableController_AddOrResolveLowStickerSupplyNotificationIfNecessary_Pre(
             ref StickerInteractableController __instance)
         {
             bool isLow = false;
@@ -78,7 +78,7 @@ namespace MakeItWork
             return false;
         }
 
-        internal static IEnumerable<CodeInstruction> TapeAddNotificationOnStartIfNecessaryTrans(
+        internal static IEnumerable<CodeInstruction> TapeDispenserController_AddNotificationOnStartIfNecessary_Trans(
             IEnumerable<CodeInstruction> instructions)
         {
             foreach (CodeInstruction i in instructions)
@@ -96,7 +96,7 @@ namespace MakeItWork
             }
         }
 
-        internal static IEnumerable<CodeInstruction> TapeSuccessTapedTrans(IEnumerable<CodeInstruction> instructions)
+        internal static IEnumerable<CodeInstruction> TapeDispenserController_SuccessTaped_Trans(IEnumerable<CodeInstruction> instructions)
         {
             foreach (CodeInstruction i in instructions)
             {

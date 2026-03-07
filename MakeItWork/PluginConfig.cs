@@ -23,6 +23,7 @@ namespace MakeItWork
         internal static ConfigEntry<float> ZoomScrollMultiplier { get; set; }
         internal static ConfigEntry<float> MinZoomDistance { get; set; }
         internal static ConfigEntry<float> MaxZoomDistance { get; set; }
+        internal static ConfigEntry<bool> EnableMinVehicleRequirement { get; set; }
 
         internal static void Initialize()
         {
@@ -99,6 +100,13 @@ namespace MakeItWork
                 new ConfigDescription(
                     "The lower the number, the closer you can zoom in on the vehicle.",
                     new AcceptableValueRange<float>(0.0f, 50.0f)));
+
+            EnableMinVehicleRequirement = _cfgFile.Bind(
+                "Partnerships",
+                "EnableMinVehicleRequirement",
+                true,
+                "If enabled, changes the vehicle requirements for partnerships from 'needs exactly this vehicle' to " +
+                "'needs this or a bigger vehicle'.");
 
             // FileSystemWatcher does not seem to fire events
             // SetupWatcher();

@@ -6,14 +6,14 @@ namespace MakeItWork
     internal static class CameraPatch
     {
         //DisableResetCamera
-        internal static bool RCCP_CameraOrbitPre(ref RCCP_Camera __instance)
+        internal static bool RCCP_Camera_Orbit_Pre(ref RCCP_Camera __instance)
         {
             __instance.orbitReset = !PluginConfig.DisableCameraReset.Value;
             return true;
         }
 
         //FollowVehicleAtAngle
-        internal static bool RCCP_CameraLateUpdatePre(ref RCCP_Camera __instance)
+        internal static bool RCCP_Camera_LateUpdate_Pre(ref RCCP_Camera __instance)
         {
             // FollowVehicleAtAngle
             __instance.tPSMode = PluginConfig.EnableFollowVehicleAtAngle.Value ?
@@ -24,7 +24,7 @@ namespace MakeItWork
         }
 
         // Zoom
-        internal static void RCCP_CameraInputsPost(ref RCCP_Camera __instance)
+        internal static void RCCP_Camera_Inputs_Post(ref RCCP_Camera __instance)
         {
             __instance.zoomScrollMultiplier = PluginConfig.ZoomScrollMultiplier.Value;
 

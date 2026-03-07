@@ -2,7 +2,7 @@
 {
     internal static class SkipTutorialPatch
     {
-        internal static void QuestGoalInitPost(ref QuestGoal __instance)
+        internal static void QuestGoal_Init_Post(ref QuestGoal __instance)
         {
             __instance.ForceComplete();
             __instance.Complete();

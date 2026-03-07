@@ -12,7 +12,7 @@ namespace MakeItWork
      */
     internal static class AutoLightsPatch
     {
-        internal static IEnumerable<CodeInstruction> OnEnableTrans(IEnumerable<CodeInstruction> instructions)
+        internal static IEnumerable<CodeInstruction> LightSwitchController_OnEnable_Trans(IEnumerable<CodeInstruction> instructions)
         {
             // remove "if (_isMainLight)" check so all lights are subscribed to OnHourPassed
             bool isMainLightChecked = false;
@@ -29,7 +29,7 @@ namespace MakeItWork
             }
         }
 
-        internal static bool OnHourPassedPre(ref LightSwitchController __instance)
+        internal static bool LightSwitchController_OnHourPassed_Pre(ref LightSwitchController __instance)
         {
             EnviroTimeModule currentTime = ((EnviroManagerBase)EnviroManager.instance).Time;
             // the actual time should always be 2-3 seconds before the full hour but just to be safe, round up from 30 minutes
