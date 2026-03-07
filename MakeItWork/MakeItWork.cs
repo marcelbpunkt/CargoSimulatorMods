@@ -1,13 +1,15 @@
-﻿
-using BepInEx;
+﻿using BepInEx;
 using HarmonyLib;
 using System.Collections.Generic;
 
 namespace MakeItWork
 {
+
     [BepInPlugin(PluginInfo.PLUGIN_GUID, PluginInfo.PLUGIN_NAME, PluginInfo.PLUGIN_VERSION)]
     public class MakeItWork : BaseUnityPlugin
     {
+        private static bool oneTimeMessageDisplayed = false;
+
         ////////////////////
         // Initialization //
         ////////////////////
@@ -20,7 +22,8 @@ namespace MakeItWork
 
         private void OnDestroy()
         {
-            PluginConfig.Save();
+            // not necessary since config manager does not work in this game
+            // PluginConfig.Save();
         }
 
 
@@ -97,27 +100,6 @@ namespace MakeItWork
                 AutoLightsPatch.OnHourPassedPre(ref __instance);
         }
 
-        //////////////////
-        // Camera patch //
-        //////////////////
-
-        // DisableResetCamera
-        [HarmonyPatch(typeof(RCCP_Camera), nameof(RCCP_Camera.ORBIT))]
-        [HarmonyPrefix]
-        internal static bool RCCP_CameraOrbitPre(ref RCCP_Camera __instance)
-        {
-            return CameraPatch.RCCP_CameraOrbitPre(ref __instance);
-        }
-
-        /* WIP
-        [HarmonyPatch(typeof(RCCP_Camera), nameof(RCCP_Camera.TPS2))]
-        [HarmonyTranspiler]
-        internal static IEnumerable<CodeInstruction> RCCP_CameraTPS2Trans(IEnumerable<CodeInstruction> instructions)
-        {
-            return CameraPatch.RCCP_CameraTPS2Trans(instructions);
-        }
-        */
-
         ////////////////////////
         // SkipTutorial patch //
         ////////////////////////
@@ -142,6 +124,41 @@ namespace MakeItWork
             if (!PluginConfig.EnableRebalanceQueue.Value)
                 return;
             RebalanceQueuePatch.DeskQueueControllerDequeueCustomerPost(ref __instance);
+        }
+
+        //////////////////
+        // Camera patch //
+        //////////////////
+
+        // DisableResetCamera
+        [HarmonyPatch(typeof(RCCP_Camera), nameof(RCCP_Camera.ORBIT))]
+        [HarmonyPrefix]
+        internal static bool RCCP_CameraOrbitPre(ref RCCP_Camera __instance)
+        {
+            return CameraPatch.RCCP_CameraOrbitPre(ref __instance);
+        }
+
+        // FollowVehicleAtAngle
+        [HarmonyPatch(typeof(RCCP_Camera), nameof(RCCP_Camera.LateUpdate))]
+        [HarmonyPrefix]
+        internal static bool RCCP_CameraLateUpdatePre(ref RCCP_Camera __instance)
+        {
+            return CameraPatch.RCCP_CameraLateUpdatePre(ref __instance);
+        }
+
+        // Zoom
+        [HarmonyPatch(typeof(RCCP_Camera), nameof(RCCP_Camera.Inputs))]
+        [HarmonyPrefix]
+        internal static void RCCP_CameraInputsPost(ref RCCP_Camera __instance)
+        {
+            if (!PluginConfig.EnableZoomScroll.Value)
+            {
+                __instance.zoomScroll = 0f;
+                __instance.zoomScrollMultiplier = (float)PluginConfig.ZoomScrollMultiplier.DefaultValue;
+                return;
+            }
+
+            CameraPatch.RCCP_CameraInputsPost(ref __instance);
         }
     }
 }

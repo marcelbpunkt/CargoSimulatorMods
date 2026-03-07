@@ -4,7 +4,7 @@
     <TargetFramework>netstandard2.1</TargetFramework>
     <AssemblyName>marcelbpunkt.cargosimulatormods.makeitwork</AssemblyName>
     <Description>Various bugfixes and QoL improvements</Description>
-    <Version>0.5.1</Version>
+    <Version>0.6.0</Version>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <LangVersion>latest</LangVersion>
     <AssemblyTitle>MakeItWork</AssemblyTitle>
@@ -13,6 +13,11 @@
     <Company>n/a</Company>
     <PackageId>marcelbpunkt.cargosimulatormods.makeitwork</PackageId>
     <Product>MakeItWork</Product>
+    <Copyright>GNU GPL v3</Copyright>
+    <PackageProjectUrl></PackageProjectUrl>
+    <PackageReadmeFile></PackageReadmeFile>
+    <RepositoryUrl>https://github.com/marcelbpunkt/cargosimulatormods</RepositoryUrl>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
@@ -24,10 +29,18 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Include="..\LICENSE">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="BepInEx.Analyzers" Version="1.*" PrivateAssets="all" />
     <PackageReference Include="BepInEx.Core" Version="5.*" />
     <PackageReference Include="BepInEx.PluginInfoProps" Version="1.*" />
-    <PackageReference Include="UnityEngine.Modules" Version="2023.1.9" IncludeAssets="compile" />
+    <PackageReference Include="UnityEngine" Version="5.6.1" />
+    <PackageReference Include="UnityEngine.Modules" Version="6000.3.10" IncludeAssets="compile" />
   </ItemGroup>
   
   <ItemGroup Condition="'$(TargetFramework.TrimEnd(`0123456789`))' == 'net'">
@@ -40,6 +53,9 @@
     </Reference>
     <Reference Include="Enviro3.Runtime">
       <HintPath>..\libs\Enviro3.Runtime.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.InputSystem">
+      <HintPath>..\libs\Unity.InputSystem.dll</HintPath>
     </Reference>
   </ItemGroup>
   

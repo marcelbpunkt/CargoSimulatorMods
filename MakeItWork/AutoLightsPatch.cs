@@ -19,12 +19,13 @@ namespace MakeItWork
 
             foreach (var instruction in instructions)
             {
-                if (isMainLightChecked)
+                if (!isMainLightChecked)
                 {
-                    yield return instruction;
+                    isMainLightChecked = instruction.opcode == OpCodes.Brfalse;
                     continue;
                 }
-                isMainLightChecked = instruction.opcode == OpCodes.Brfalse;
+
+                yield return instruction;
             }
         }
 
